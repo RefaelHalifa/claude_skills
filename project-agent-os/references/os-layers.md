@@ -77,6 +77,7 @@ For agents that teach or introduce new ideas:
 | `DECISIONS.md` / `ARCHITECTURE.md` | Decisions are made that affect how future sessions proceed |
 | `PREFERENCES.md` | Agent should adapt to user patterns, habits, or style over time |
 | `CALENDAR_SYNC.md` | Agent needs to track dates, detect missed days, or sync with Google Calendar |
+| `WORK_STATE.md` | Agent produces artifacts across sessions that the next session must not duplicate or contradict — works for code files, legal drafts, event bookings, design components, or any domain |
 
 ### Memory Update Triggers
 Every memory file must have a defined trigger:
@@ -143,7 +144,9 @@ Triggered on first session of a new project/plan:
 ### Missed Day Recovery (include if agent tracks working days)
 Triggered when SESSION_LOG shows a date gap:
 1. Detect automatically: "You missed [day]"
-2. Recalculate remaining days
-3. Propose: keep plan as-is OR simplify scope
-4. Show today's adjusted task
-5. Never ask user to explain — just recalculate and move forward
+2. Adjust today's task from the shifted plan
+3. Update BUILD_PLAN.md: shift ALL future PENDING days to their new real dates
+4. Sync to Google Calendar via MCP: update or create events for every shifted day
+5. Update CALENDAR_SYNC.md with the new state
+6. Show user: shifted day list (old → new) + today's task
+7. Never ask user to explain — recalculate, shift, sync, move forward

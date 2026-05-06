@@ -48,7 +48,8 @@ Before writing anything, extract from the conversation or ask the user:
 ### Memory needs (ask if not obvious)
 - Does the agent need to track a **plan** that persists across sessions?
 - Does it need a **session log** (what was done, what's next)?
-- Does it need to track **decisions** made during sessions?
+- Does the agent need to track **decisions** made during sessions?
+- Does the agent need to remember **what already exists** (built, drafted, filed, booked, completed artifacts) so the next session doesn't repeat or contradict it?
 - Does it need to track **user preferences** or learning patterns?
 - Does it need a **progress tracker** (phases, milestones, completion)?
 

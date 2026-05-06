@@ -32,6 +32,7 @@ If content shows WHAT SOMETHING LOOKS LIKE → knowledge base.
 ✅ Missed day detection and recovery logic
 ✅ General rules (one-liners, max 10–15 bullets)
 ✅ Kickoff message (last 3–5 lines of instructions)
+✅ WORK_STATE.md schema definition (what it tracks, update trigger, format)
 
 ---
 
@@ -84,6 +85,7 @@ Memory files grow over time. If a file exceeds its max, the agent should:
 - DECISIONS/ARCHITECTURE: Keep all entries but trim Why/Alternatives to shortest clear form
 - PROGRESS: Replace previous status entirely — no history needed (history lives in SESSION_LOG)
 - CALENDAR_SYNC: Always current state only — never accumulates
+- WORK_STATE: Replace entries per item when updated — never accumulate history. If file exceeds 50 lines, it means too much detail per entry — trim to one-liners.
 
 ---
 
