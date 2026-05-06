@@ -48,8 +48,8 @@ Before writing anything, extract from the conversation or ask the user:
 ### Memory needs (ask if not obvious)
 - Does the agent need to track a **plan** that persists across sessions?
 - Does it need a **session log** (what was done, what's next)?
-- Does the agent need to track **decisions** made during sessions?
-- Does the agent need to remember **what already exists** (built, drafted, filed, booked, completed artifacts) so the next session doesn't repeat or contradict it?
+- Does it need to track **decisions** made during sessions?
+- Does it need to remember **what already exists** (built, drafted, filed, booked, completed artifacts) so the next session doesn't repeat or contradict it?
 - Does it need to track **user preferences** or learning patterns?
 - Does it need a **progress tracker** (phases, milestones, completion)?
 
@@ -107,6 +107,7 @@ Add based on agent type:
 - `DECISIONS.md` or `ARCHITECTURE.md` — if decisions are made that affect future sessions
 - `PREFERENCES.md` — if the agent should adapt to the user over time
 - `CALENDAR_SYNC.md` — if calendar awareness is needed
+- `WORK_STATE.md` — if the agent produces artifacts across sessions (code, documents, bookings, designs) that the next session must not duplicate or contradict
 
 Read `references/memory-templates.md` for the exact format of each file.
 

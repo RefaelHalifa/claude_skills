@@ -4,6 +4,7 @@ Ready-to-use schemas for every memory file type.
 Copy and adapt these when building the memory system in Step 3.
 These schemas go into the INSTRUCTIONS as structure definitions.
 The examples go into AGENT_REFERENCE.md — not into instructions.
+Works for any domain: code, legal, events, design, or any project type.
 
 ---
 
@@ -119,7 +120,7 @@ Sections:
 - Prefers direct feedback, not softened
 - Signals readiness with short confirmations ("ok", "got it", "next")
 
-## CODE PREFERENCES
+## CODE/OUTPUT PREFERENCES
 - Prefers explicit variable names over abbreviations
 - Dislikes inline comments on obvious lines
 - Prefers full files over fragmented snippets
@@ -190,6 +191,31 @@ Pending → Florist, transportation, accommodation block
 
 ---
 
+## MISSED DAY SHIFT FORMAT
+
+### Schema (goes in instructions)
+Not needed — the missed day recovery protocol in instructions covers the behavior.
+
+### Example (goes in AGENT_REFERENCE.md only)
+## MISSED DAY SHIFT FORMAT
+When days are missed and the plan is shifted, report to user like this:
+
+Shifted Days:
+- [New Date] (was [Old Date]) → [Task]
+- [New Date] (was [Old Date]) → [Task]
+
+Today: [New Date] — [Task]
+
+Example:
+Shifted Days:
+- Sun Jan 19 (was Thu Jan 16) → Auth routes + JWT logic
+- Mon Jan 20 (was Sun Jan 19) → Password reset endpoint
+- Tue Jan 21 (was Mon Jan 20) → Email verification flow
+
+Today: Sun Jan 19 — Auth routes + JWT logic
+
+---
+
 ## AGENT_REFERENCE.md — Master Template
 
 This is the token-saving knowledge base file. It contains all examples and static reference content
@@ -206,3 +232,4 @@ Do not load this entire file every message — jump to the relevant section when
 - Working Days & Schedule Rules
 - Code/Content Format Examples
 - Domain-Specific Reference (tech stack choices, naming conventions, etc.)
+- Missed Day Shift Format (include if agent tracks working days and calendar)

@@ -148,5 +148,5 @@ Triggered when SESSION_LOG shows a date gap:
 3. Update BUILD_PLAN.md: shift ALL future PENDING days to their new real dates
 4. Sync to Google Calendar via MCP: update or create events for every shifted day
 5. Update CALENDAR_SYNC.md with the new state
-6. Show user: shifted day list (old → new) + today's task
+6. Show user: shifted day list (old date → new date, one line each) + today's task
 7. Never ask user to explain — recalculate, shift, sync, move forward

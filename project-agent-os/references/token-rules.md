@@ -30,9 +30,9 @@ If content shows WHAT SOMETHING LOOKS LIKE → knowledge base.
 ✅ Kickoff protocol
 ✅ Calendar sync rules (when to sync, what to do with results, fallback behavior)
 ✅ Missed day detection and recovery logic
+✅ WORK_STATE.md schema definition (what it tracks, update trigger, format)
 ✅ General rules (one-liners, max 10–15 bullets)
 ✅ Kickoff message (last 3–5 lines of instructions)
-✅ WORK_STATE.md schema definition (what it tracks, update trigger, format)
 
 ---
 
@@ -80,12 +80,12 @@ The goal: the agent should be able to read all six memory files in under 500 tok
 ## MEMORY FILE SIZE MANAGEMENT
 
 Memory files grow over time. If a file exceeds its max, the agent should:
+- WORK_STATE: Replace entries per item when updated — never accumulate history. If file exceeds 50 lines, trim entries to one-liners only.
 - SESSION_LOG: Archive older entries (keep last 10 sessions active, move older to ARCHIVE section at bottom)
 - PREFERENCES: Merge duplicate or redundant entries, keep only the clearest version
 - DECISIONS/ARCHITECTURE: Keep all entries but trim Why/Alternatives to shortest clear form
 - PROGRESS: Replace previous status entirely — no history needed (history lives in SESSION_LOG)
 - CALENDAR_SYNC: Always current state only — never accumulates
-- WORK_STATE: Replace entries per item when updated — never accumulate history. If file exceeds 50 lines, it means too much detail per entry — trim to one-liners.
 
 ---
 
