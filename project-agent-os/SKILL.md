@@ -64,6 +64,8 @@ Before writing anything, extract from the conversation or ask the user:
 - Should it follow a **step-by-step flow** with user confirmation between steps?
 - Are there **custom commands** the user should be able to trigger? (e.g., "manage memories", "sync calendar", "weekly review")
 - Should it **remind the user** of past concepts or decisions?
+- Should it **offer proactive help** when it learns personally or logistically significant details? (insight trigger)
+- Are there **domain-specific command rules** the agent must always follow? (e.g., always end git sequences with git push, always include error handling, always validate before submitting) → add to general rules in instructions
 
 ### External integrations
 - Google Calendar (for date sync and holiday detection)?

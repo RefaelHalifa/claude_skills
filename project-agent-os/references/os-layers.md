@@ -63,6 +63,16 @@ For agents that teach or introduce new ideas:
 - **Neutral** — factual, no emotional framing
 - Match to user's stated preference or infer from context
 
+### Insight Trigger Rule
+When the agent learns any personally or logistically significant detail during a session
+(a date, an event, a deadline, a life change, a commitment), it should pause and offer
+relevant help — never act automatically. Examples:
+- Personal date learned → offer to add to Google Calendar
+- Deadline mentioned → offer to block working days in calendar
+- New tool or technology mentioned → offer to note in DECISIONS.md
+- Life event mentioned → offer to adjust the plan around it
+Keep the offer short (1–2 lines) and let the user decide.
+
 ---
 
 ## LAYER 3: MEMORY SYSTEM
@@ -92,6 +102,7 @@ Every memory file must have a defined trigger:
 - DECISIONS/ARCHITECTURE: one-liner per decision (date | decision | who | why | alternatives)
 - PROGRESS: short status update (phase, completion %, next milestone)
 - CALENDAR_SYNC: current state only, no history, rebuilt fresh each session
+- WORK_STATE: one entry per file/artifact, updated in place never deleted, includes last modified date
 
 ---
 
@@ -113,7 +124,9 @@ What the agent does before every session ends:
 3. Update PROGRESS if phase changed
 4. Update DECISIONS/ARCHITECTURE if decisions were made
 5. Update PREFERENCES if patterns were observed
-6. Tell user: what was completed + what's next (1–2 sentences only)
+6. Update WORK_STATE: update in-place any file/artifact touched this session, add new entries for new files, mark removed files as REMOVED — never delete existing lines
+7. Insight trigger: if any personally or logistically significant detail was shared this session, offer relevant help before signing off (calendar event, plan adjustment, memory note) — one offer, 1–2 lines, let user decide
+8. Tell user: what was completed + what's next (1–2 sentences only)
 
 ### Auto-Capture Rule (include if agent has DECISIONS or PREFERENCES file)
 The agent silently watches for and immediately logs:
@@ -121,13 +134,23 @@ The agent silently watches for and immediately logs:
 - Any preference observed → PREFERENCES.md
 - Any struggle or quick grasp → PREFERENCES.md LEARNING section
 - Any pattern repeated → update existing entry, don't duplicate
+- Any file/artifact created or significantly changed → WORK_STATE.md immediately
 Rules: observed only (no assumptions), one-liners only, silent (no interruption)
 
 ### "Manage Memories" Command (include if agent has 3+ memory files)
 Triggered by user saying "manage memories":
-1. Collect: read all memory files + full session history
+
+1. Collect using a tiered approach:
+   - Tier 1: Read all memory files
+   - Tier 2: Deep scan last 3–5 sessions — extract file names, imports, functions,
+     decisions, preferences mentioned in chat but never saved to memory files
+   - Tier 3: Light scan older sessions only if gaps remain after Tier 2 —
+     search for the specific missing information only, not everything
+   - Sync Google Calendar via MCP for date context
 2. Audit: check each file for accuracy, completeness, contradictions
-3. Rebuild: reconstruct all files cleanly from collected context
+3. Rebuild: reconstruct all files cleanly — pay special attention to WORK_STATE,
+   rebuilding one entry per file with full current state + last modified date,
+   never deleting existing entries
 4. Report: brief summary of what was fixed, current status, today's task
 5. Ask: "Memory is reorganized. Ready to continue?"
 

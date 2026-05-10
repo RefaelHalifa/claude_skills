@@ -156,38 +156,44 @@ Last Sync: Google Calendar MCP — success
 
 ### Schema (goes in instructions)
 **`WORK_STATE.md`**
-- Updated at the END of every session, and immediately when a significant artifact is created or changed
-- Snapshots what currently EXISTS — not what was done, but what is there right now
-- Current state only — previous entries for the same item are replaced, not appended
-- Format: Item/File/Module → what exists inside it (comma-separated, one-liners)
-- Domain examples:
-  - Code: file path → imports, functions, routes, models present
-  - Legal: document name → sections drafted, clauses included, status
-  - Event: category → vendors booked, decisions confirmed, items completed
-  - Design: component/page → elements built, states handled, assets created
+- Updated at the END of every session and immediately when a file/artifact is created or significantly changed
+- One entry per file/module — NEVER deleted, only updated in place
+- Each entry tracks full current state + last modified date
+- Format: Item [modified: YYYY-MM-DD] → what exists inside it (comma-separated)
+- If content is added: update that line only, all other lines stay untouched
+- If new file/artifact created: add a new line
+- If file/artifact removed: mark as REMOVED, do not delete the line
+- Purpose: agent always has the full project picture — never needs to ask the user what's in a file
+
+Domain examples:
+- Code: file path → imports, functions, routes, models present
+- Legal: document name → sections drafted, clauses included, filing status
+- Event: category → vendors booked, decisions confirmed, items completed
+- Design: component/page → elements built, states handled, assets created
 
 ### Example — Code project (goes in AGENT_REFERENCE.md only)
 ## WORK STATE
-app/main.py → FastAPI app init, CORS middleware, router includes (users, auth)
-app/models/user.py → User model, UserCreate schema, UserResponse schema
-app/routes/auth.py → /register, /login, /refresh endpoints
-app/routes/users.py → /me GET endpoint
-app/db/session.py → engine, SessionLocal, get_db dependency
-requirements.txt → fastapi, uvicorn, sqlalchemy, pydantic, python-jose, passlib
+app/main.py [modified: 2025-01-15] → FastAPI app init, CORS middleware, router includes (users, auth)
+app/models/user.py [modified: 2025-01-13] → User model, UserCreate schema, UserResponse schema
+app/routes/auth.py [modified: 2025-01-15] → /register, /login, /refresh endpoints
+app/routes/users.py [modified: 2025-01-12] → /me GET endpoint
+app/db/session.py [modified: 2025-01-12] → engine, SessionLocal, get_db dependency
+requirements.txt [modified: 2025-01-12] → fastapi, uvicorn, sqlalchemy, pydantic, python-jose, passlib
+app/utils/email.py [modified: 2025-01-14] → REMOVED
 
 ### Example — Legal project (goes in AGENT_REFERENCE.md only)
 ## WORK STATE
-Contract Draft v3 → Parties clause ✓, Scope of work ✓, Payment terms ✓, IP ownership (in progress), Termination clause (pending)
-Filed Documents → NDA signed 2025-01-10, Incorporation cert filed 2025-01-12
-Pending → Shareholder agreement, Operating agreement
+Contract Draft v3 [modified: 2025-01-15] → Parties clause ✓, Scope of work ✓, Payment terms ✓, IP ownership (in progress), Termination clause (pending)
+Filed Documents [modified: 2025-01-12] → NDA signed 2025-01-10, Incorporation cert filed 2025-01-12
+Pending [modified: 2025-01-13] → Shareholder agreement, Operating agreement
 
 ### Example — Event planning project (goes in AGENT_REFERENCE.md only)
 ## WORK STATE
-Venue → The Grand Hall confirmed, deposit paid, capacity 200
-Catering → Three quotes received, Bella Cucina selected, menu pending final approval
-Entertainment → DJ booked, photographer shortlisted (2 options remaining)
-Invitations → Guest list finalized (87 people), invites not yet sent
-Pending → Florist, transportation, accommodation block
+Venue [modified: 2025-01-12] → The Grand Hall confirmed, deposit paid, capacity 200
+Catering [modified: 2025-01-14] → Three quotes received, Bella Cucina selected, menu pending final approval
+Entertainment [modified: 2025-01-15] → DJ booked, photographer shortlisted (2 options remaining)
+Invitations [modified: 2025-01-13] → Guest list finalized (87 people), invites not yet sent
+Pending [modified: 2025-01-15] → Florist, transportation, accommodation block
 
 ---
 
