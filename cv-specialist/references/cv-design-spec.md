@@ -109,7 +109,79 @@
 
 ---
 
-## Generation Method
+## Generation Method — Pre-Budget Single-Pass (PERMANENT, 2026-05-11)
+
+> **CRITICAL: never use the old "render → measure → trim → re-render" loop.**
+> Every margin-chase rebuild costs tokens. Compute the content budget BEFORE rendering, trim to fit, render ONCE.
+
+### Pre-budget algorithm — run this BEFORE any reportlab call
+
+Step 1 — Compute available content height (constant per page geometry):
+```python
+PAGE_H = 297 * mm                 # A4
+MT, MB = 13 * mm, 11 * mm         # margins
+TARGET_BOTTOM = 11 * mm           # we want to land near MB, not waste paper
+USABLE_H = PAGE_H - MT - MB       # ≈ 273 mm = 774 pt
+```
+
+Step 2 — Compute fixed-section height (these never trim):
+```python
+FIXED = (
+    name_block_h +                # 22pt name + padding
+    contact_h +                   # contact line + link line + rule
+    languages_h +                 # always one line
+    section_header_h * 5 +        # Summary, Skills, Experience, Projects, Education headers
+    section_gaps_total            # sum from spacing table above
+)
+```
+
+Step 3 — Estimate variable-section height from content character counts BEFORE rendering:
+```python
+# Empirically derived constants — leave fixed unless reportlab font/size changes
+CHARS_PER_LINE_BODY      = 96    # at 8.4pt Helvetica, 178mm width
+CHARS_PER_LINE_SUMMARY   = 88    # at 8.8pt Helvetica
+LINE_H_BODY              = 13    # pt — matches bullet line_h
+LINE_H_SUMMARY           = 13    # pt
+
+def est_h(text, cpl, line_h):
+    lines = max(1, -(-len(text) // cpl))   # ceiling division
+    return lines * line_h
+```
+
+Step 4 — Compute total budget BEFORE choosing what to include:
+```python
+budget = USABLE_H - FIXED                  # pt available for variable content
+variable_h = (
+    est_h(summary, CHARS_PER_LINE_SUMMARY, LINE_H_SUMMARY) +
+    sum(est_h(b, CHARS_PER_LINE_BODY, LINE_H_BODY) for b in all_bullets) +
+    skills_rows * 14                        # 11pt leading + 3pt gap
+)
+```
+
+Step 5 — If `variable_h > budget`, trim by priority list BEFORE rendering:
+```python
+trim_order = [
+    "drop_oldest_bullet_from_lowest_priority_role",
+    "tighten_summary_to_3_lines",
+    "drop_weakest_project",
+    "shorten_each_bullet_by_one_phrase",
+]
+# Trim items in order, recomputing variable_h after each. Stop the moment it fits.
+```
+
+Step 6 — Render ONCE with the trimmed content. Bottom-margin verification is a sanity check only — never a trigger for another render.
+
+### Acceptance criteria — no second render allowed
+
+After the single render, accept the result if:
+- Page count == 1 ✅
+- Bottom margin remaining is anywhere in 3–18mm range ✅ (don't chase exact 10–12mm)
+
+**HARD CAP: maximum 2 renders per CV session.** If the second render still doesn't fit, STOP and ask the user which bullet to drop — do not loop further.
+
+---
+
+## Legacy Generation Method (reference only — DO NOT USE)
 
 Built with **Python + ReportLab canvas** — direct drawing, NO Platypus flowables.
 Direct canvas gives pixel-level control over every element.
