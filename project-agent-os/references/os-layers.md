@@ -77,6 +77,11 @@ Keep the offer short (1–2 lines) and let the user decide.
 
 ## LAYER 3: MEMORY SYSTEM
 
+The table below lists *what* memory concepts an agent may need — it is platform-agnostic.
+`references/platform-targets.md` defines *how* each concept actually gets persisted and
+recalled on the chosen platform (real file, memory-tool entry, frontmattered topic file, etc.).
+Design the conceptual table first, then translate it through the matching profile.
+
 ### When to include each file
 
 | File | Include when... |
@@ -86,7 +91,7 @@ Keep the offer short (1–2 lines) and let the user decide.
 | `BUILD_PLAN.md` / `ROADMAP.md` | There is a structured day-by-day or phase-by-phase plan |
 | `DECISIONS.md` / `ARCHITECTURE.md` | Decisions are made that affect how future sessions proceed |
 | `PREFERENCES.md` | Agent should adapt to user patterns, habits, or style over time |
-| `CALENDAR_SYNC.md` | Agent needs to track dates, detect missed days, or sync with Google Calendar |
+| `CALENDAR_SYNC.md` | Agent needs to track dates, detect missed days, or sync with Google Calendar — **note**: on platforms with no addressable persistent files and no MCP date source (e.g. claude.ai built-in memory, see `platform-targets.md` Profile B), this collapses into a single "current date" memory entry rather than a rebuilt-each-session file |
 | `WORK_STATE.md` | Agent produces artifacts across sessions that the next session must not duplicate or contradict — works for code files, legal drafts, event bookings, design components, or any domain |
 
 ### Memory Update Triggers
@@ -140,13 +145,19 @@ Rules: observed only (no assumptions), one-liners only, silent (no interruption)
 ### "Manage Memories" Command (include if agent has 3+ memory files)
 Triggered by user saying "manage memories":
 
-1. Collect using a tiered approach:
-   - Tier 1: Read all memory files
-   - Tier 2: Deep scan last 3–5 sessions — extract file names, imports, functions,
-     decisions, preferences mentioned in chat but never saved to memory files
-   - Tier 3: Light scan older sessions only if gaps remain after Tier 2 —
-     search for the specific missing information only, not everything
-   - Sync Google Calendar via MCP for date context
+1. Collect using a tiered approach — **Tiers 2–3 only apply where the platform actually
+   supports session/transcript history search** (Claude Code, Cowork — see the
+   "history-search available" row in `references/platform-targets.md`'s comparison table).
+   On platforms without it (Claude Project KB files, claude.ai built-in memory): **skip
+   Tiers 2–3 entirely**, rely solely on memory artifacts as the source of truth, and tell
+   the user plainly — "I can only see what's saved in memory; anything mentioned in chat but
+   never saved may be lost."
+   - Tier 1 (always): Read/query all memory artifacts
+   - Tier 2 (Claude Code / Cowork only): Deep scan last 3–5 sessions — extract file names,
+     imports, functions, decisions, preferences mentioned in chat but never saved to memory
+   - Tier 3 (Claude Code / Cowork only): Light scan older sessions only if gaps remain after
+     Tier 2 — search for the specific missing information only, not everything
+   - Sync calendar using the platform's fallback chain (`platform-targets.md`) for date context
 2. Audit: check each file for accuracy, completeness, contradictions
 3. Rebuild: reconstruct all files cleanly — pay special attention to WORK_STATE,
    rebuilding one entry per file with full current state + last modified date,

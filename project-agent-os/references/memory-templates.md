@@ -8,6 +8,31 @@ Works for any domain: code, legal, events, design, or any project type.
 
 ---
 
+## SENSITIVE DATA HYGIENE
+
+Apply this rule to every memory file/entry/topic this skill produces — read it before writing
+any schema or example.
+
+**Never write these verbatim into persistent memory:**
+- Compensation/salary figures
+- Contract financial terms (amounts, rates, penalties)
+- Personal identity numbers (ID/SSN/passport, account numbers)
+- Credentials or secrets (passwords, API keys, tokens)
+- Raw health or legal case specifics
+
+**Instead:** summarize or generalize — log "compensation discussion in progress" not the
+actual number, "NDA reviewed — standard confidentiality + 2yr non-compete" not the verbatim
+clause text.
+
+**Apply extra caution on platforms where the user doesn't fully control where memory is
+stored** — see `references/platform-targets.md` for which platforms (e.g. Profile B's
+built-in memory, Profile C's managed directory) carry more risk than a user-owned filesystem
+(Profile D) or a user-managed Project (Profile A).
+
+This rule is the target of the "Sensitive-data hygiene" design principle in `SKILL.md`.
+
+---
+
 ## SESSION_LOG.md
 
 ### Schema (goes in instructions)
@@ -132,6 +157,11 @@ Sections:
 ---
 
 ## CALENDAR_SYNC.md
+
+> **Platform note:** on platforms with no addressable persistent files and no MCP date source
+> (e.g. claude.ai built-in memory — see `references/platform-targets.md` Profile B), this
+> concept collapses into a single "last known date" memory-tool entry rather than a file
+> rebuilt fresh each session. Adapt the schema below accordingly for that profile.
 
 ### Schema (goes in instructions)
 **`CALENDAR_SYNC.md`**

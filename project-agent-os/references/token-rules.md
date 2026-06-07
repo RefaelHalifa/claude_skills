@@ -16,6 +16,12 @@ Examples, formats, standards, static rules the agent looks up occasionally.
 If content tells the agent HOW TO BEHAVE → instructions.
 If content shows WHAT SOMETHING LOOKS LIKE → knowledge base.
 
+**Note:** the *name and location* of the artifact that holds reference content can differ by
+platform — a separate `AGENT_REFERENCE.md` KB file (Claude Project), a topic file inside
+Cowork's managed memory directory, or content folded into the agent's persistent context
+(claude.ai built-in memory). See `references/platform-targets.md` for the per-platform
+artifact map. The split principle itself — behavior rules vs. reference content — never changes.
+
 ---
 
 ## WHAT GOES IN INSTRUCTIONS

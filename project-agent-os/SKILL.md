@@ -35,6 +35,51 @@ Read `references/token-rules.md` for the rules on what goes in instructions vs. 
 
 ---
 
+## STEP 0 — IDENTIFY PLATFORM TARGET
+
+Before anything else, work out **where this agent will actually run** — that determines how
+memory persists and how commands behave. Ask the user (in plain language, no jargon) or infer
+from context which of these fits:
+
+- **A — Claude Project** with a file-based knowledge base (the classic setup: paste instructions, create KB files)
+- **B — claude.ai chat/Project using built-in memory** (no files — Anthropic's memory feature)
+- **C — Cowork** (its own managed memory directory with an index + linked topic files)
+- **D — Claude Code / a filesystem-backed agent** (real files, repo, possibly hooks/skills)
+
+Read `references/platform-targets.md` now — it defines exactly how Layers 3 and 4 get built
+in Steps 2–3 and how output artifacts are shaped in Steps 3–4 for each profile.
+
+If the platform is unclear or the user doesn't know, **default to Profile A** and say so
+explicitly ("I'll build this for a Claude Project with file-based memory unless you tell me
+otherwise") — it's the skill's most mature, fully-specified path.
+
+**Also determine here whether this is a from-scratch build or a retrofit.** If the user has
+supplied an existing agent prompt and wants memory, calendar sync, behavior structure, or
+token optimization added to it — skip to **STEP 1B — RETROFIT MODE** instead of Step 1.
+
+### Filesystem platforms (Profiles C and D): check before you build
+
+On Cowork and Claude Code — both real-filesystem platforms — **never assume the project is a
+blank slate.** A memory/instructions system may already exist (a `CLAUDE.md`, a `memory/`
+directory with an index file, hooks, existing skills, established frontmatter or naming
+conventions). Building a parallel structure on top of one that already exists creates
+duplication and conflicts — exactly what this skill is supposed to prevent.
+
+Before designing anything:
+1. **Look first** — `ls`/`find`/`Read` for `CLAUDE.md`, a `memory/` or similarly-named
+   directory, an index file (`MEMORY.md`/`INDEX.md`), hooks, or skills that already manage
+   persistence or instructions.
+2. **If something exists**, treat this like retrofit mode (Step 1B) even if the user didn't
+   frame it that way: audit the existing system against the four OS layers, map the new
+   agent's needs onto its *existing* file names, frontmatter, and index conventions — don't
+   invent new ones — and propose additive integration.
+3. **Only design from scratch (Steps 1–5 as written) if nothing exists.**
+
+See the "check for existing infrastructure first" note in `references/platform-targets.md`
+Profiles C and D.
+
+---
+
 ## STEP 1 — CAPTURE INTENT
 
 Before writing anything, extract from the conversation or ask the user:
@@ -80,6 +125,32 @@ If any required field is missing, ask before proceeding. Do not guess.
 
 ---
 
+## STEP 1B — RETROFIT MODE
+
+Use this instead of Steps 1–4 when the user supplies an **existing agent prompt** and wants
+memory, calendar sync, behavior structure, or token optimization added to it. Goal: improve
+the agent without rebuilding it — preserve its voice, roles, and existing custom behavior.
+
+1. **Confirm the destination platform** via Step 0 (the prompt's current home and its future
+   home may differ — plan for where it will run, not where it came from).
+2. **Audit**: map the existing prompt's content onto the four OS layers (Identity & Roles,
+   Behavior System, Memory System, Commands & Protocols). For each layer, mark it
+   present / partial / missing — mirror the structure in `references/os-layers.md`.
+3. **Gap list**: write out concretely what's missing or weak (e.g., "no session-log
+   equivalent," "no calendar fallback chain," "memory updates aren't silent," "no token split
+   between instructions and reference content").
+4. **Propose additive patches only — never a full rebuild.** Each patch is a small, clearly
+   scoped insertion or edit, shown as a before/after or "insert after section X: ..." block,
+   that preserves the original prompt's tone, roles, and behavior. Use the same memory file
+   templates (`references/memory-templates.md`) and platform mechanics
+   (`references/platform-targets.md`) as the from-scratch flow — only the *delivery format*
+   changes (patches vs. full files).
+5. **Present patches grouped by layer** and let the user approve or reject each independently.
+6. Route every approved patch through the same instructions-vs-reference split rules as
+   Step 3 (`references/token-rules.md`), so additions don't bloat the original prompt.
+
+---
+
 ## STEP 2 — DESIGN THE OS LAYERS
 
 Once you have the answers, design all four layers. Read `references/os-layers.md` for full guidance.
@@ -99,6 +170,11 @@ Define how the agent behaves during sessions.
 - Feedback and correction style
 
 ### Layer 3: MEMORY SYSTEM
+How these are persisted and recalled depends on the platform identified in Step 0 — read the
+matching profile in `references/platform-targets.md` before designing concrete file/entry
+structures. The list below is the platform-agnostic *concept* inventory; the profile tells you
+whether each concept becomes a real file, a memory-tool entry, or a frontmattered topic file.
+
 Choose which memory files this agent needs and design each one.
 Always include at minimum:
 - `SESSION_LOG.md` — if multi-session
@@ -114,6 +190,11 @@ Add based on agent type:
 Read `references/memory-templates.md` for the exact format of each file.
 
 ### Layer 4: COMMANDS & PROTOCOLS
+What "read all memory files," "manage memories," and calendar sync actually *mean* in
+practice depends on the platform — re-check `references/platform-targets.md` for the matching
+profile before writing protocol wording (e.g. "manage memories" deep-scan tiers only exist
+where session-history search is possible).
+
 Define special commands and automatic protocols.
 Always include:
 - Session start protocol (what the agent does automatically at the start of every chat)
@@ -135,8 +216,14 @@ Read `references/token-rules.md` before writing any file.
 
 ### Build order:
 1. Write `INSTRUCTIONS.md` — the system prompt
-2. Write memory file structures (schemas only, not content — agent fills them during sessions)
-3. Write `AGENT_REFERENCE.md` — everything moved out of instructions to save tokens
+2. Write the memory artifacts in the shape the platform actually uses (schemas/concepts only,
+   not content — the agent fills them during sessions): real file schemas for Profiles A/D,
+   memory-tool entry templates for Profile B, or `MEMORY.md` index entries + frontmattered
+   topic files for Profile C. See `references/platform-targets.md` → "Output artifacts" for
+   the exact shape per profile.
+3. Write `AGENT_REFERENCE.md` — everything moved out of instructions to save tokens (note: on
+   some platforms this may itself need to be a topic file or folded artifact rather than a
+   standalone KB file — check the matching profile)
 4. Write the setup checklist
 
 ### Instructions file rules:
@@ -168,6 +255,12 @@ Present everything in this order:
 5. **Setup checklist** — Numbered steps for what to create where
 
 ### Setup checklist format:
+The shape below is for Profile A (Claude Project / KB files) — adapt it to the platform's
+actual setup steps using its "Output artifacts" description in `references/platform-targets.md`.
+For example: Profile B replaces "create KB files" with "enable/configure the memory tool";
+Profile C replaces it with "place files in the managed memory directory with correct
+frontmatter and link them from MEMORY.md"; Profile D uses real repo paths.
+
 ```
 SETUP CHECKLIST
 □ Step 1: Open your Claude Project → Settings → Instructions
@@ -184,15 +277,25 @@ SETUP CHECKLIST
 ## STEP 5 — VALIDATE BEFORE DELIVERING
 
 Before presenting, check:
+- [ ] **Dry run**: mentally simulate a session start using the produced INSTRUCTIONS.md plus
+      the initial memory artifacts — confirm every file/entry/topic the instructions reference
+      actually got created in Step 3, every "read X" instruction has something to read, and the
+      wording matches the platform's real recall mechanism (file read / memory-tool query /
+      index-and-links / grep) per `references/platform-targets.md`
 - [ ] Instructions are under 400 lines
 - [ ] No format examples are inside instructions (they're in AGENT_REFERENCE.md)
-- [ ] Every memory file has: filename, update trigger, format rule
-- [ ] Session start protocol reads ALL memory files
-- [ ] Session end protocol updates ALL relevant memory files
+- [ ] Every memory artifact has: name/path, update trigger, format rule
+- [ ] Session start protocol reads/queries ALL memory artifacts (in the platform-appropriate way)
+- [ ] Session end protocol updates ALL relevant memory artifacts
 - [ ] Auto-capture rule is present if agent tracks decisions or preferences
-- [ ] If Google Calendar MCP is included: sync is triggered at session start AND end
-- [ ] "manage memories" command is included if agent has 3+ memory files
-- [ ] Setup checklist is complete and numbered
+- [ ] Calendar fallback follows the platform's actual chain (see `platform-targets.md`
+      comparison table) — never a blanket "Google Calendar MCP, else system date" assumption;
+      the fallback used is logged or surfaced, never silently assumed
+- [ ] "manage memories" command is included if agent has 3+ memory artifacts, AND its
+      deep-scan tiers (2–3) are present only where the platform actually supports
+      session/transcript history search (Claude Code, Cowork) — otherwise they're explicitly
+      omitted with a note to the user about the limitation
+- [ ] Setup checklist is complete, numbered, and matches the platform's real setup steps
 
 ---
 
@@ -210,10 +313,26 @@ Static content (examples, standards, reference formats) lives in the knowledge b
 All session log entries, preference entries, and decision entries are maximum one sentence. Density over length.
 
 **Calendar truth**
-Dates always come from Google Calendar MCP (if integrated), never from assumption. If MCP is unavailable, fall back to system date and log the fallback.
+Dates come from the platform's most reliable source first, in the fallback order defined per
+profile in `references/platform-targets.md` (e.g. system clock → MCP for Claude Code; MCP →
+ask the user for Claude Project/claude.ai; session context → MCP for Cowork). Never assumed
+silently — whichever source was used gets logged or surfaced to the user.
 
 **Silent memory updates**
 The agent never interrupts a session to announce it saved something. All memory updates happen silently unless the user explicitly asks.
+
+**Sensitive-data hygiene**
+Certain categories — compensation/salary figures, contract financial terms, personal ID
+numbers, credentials/secrets, raw health or legal specifics — must never be written verbatim
+into persistent memory. Summarize or omit instead (e.g. "compensation discussion in progress,"
+not the figure). Apply extra caution on platforms where the user doesn't fully control where
+memory is stored — see `references/memory-templates.md` for the full rule and
+`references/platform-targets.md` for which platforms warrant more care.
+
+**Platform-aware mechanics**
+The four-layer model (Identity, Behavior, Memory, Commands) is constant across every platform.
+*How* Layers 3 and 4 are actually implemented — files, memory-tool entries, indexed topic
+files, or a real filesystem — is decided once in Step 0 and threads through every later step.
 
 **Commands are always available**
 Custom commands ("manage memories", "sync calendar", etc.) work at any point in any session without needing setup or context re-establishment.

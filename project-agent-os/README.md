@@ -1,8 +1,8 @@
 # project-agent-os
 
-A Claude skill that builds complete, ready-to-use Claude Project agents from scratch.
+A Claude skill that builds complete, ready-to-use persistent agents — for any platform, from scratch or retrofitted onto an existing prompt.
 
-Describe what your agent should do — it produces a fully structured system prompt, memory files, and a knowledge base reference file, all optimized for token efficiency and multi-session consistency.
+Describe what your agent should do (and where it'll run — Claude Project, claude.ai, Cowork, or Claude Code) — it produces a fully structured system prompt, a memory system adapted to that platform's actual persistence mechanics, and a knowledge base reference file, all optimized for token efficiency and multi-session consistency.
 
 ---
 
@@ -27,7 +27,7 @@ Every agent built with this skill gets four layers:
 
 **Behavior System** — How the agent behaves during sessions: step-by-step flow with confirmation gates, concept introduction rules, revisited concept reminders, feedback style.
 
-**Memory System** — Automatic persistent memory across sessions using Claude Project knowledge base files. Supported file types:
+**Memory System** — Automatic persistent memory across sessions, adapted to whichever platform the agent runs on: Claude Project knowledge-base files, claude.ai's built-in memory tool, Cowork's managed memory directory (index + frontmatter topic files), or a real filesystem (Claude Code). The underlying concepts are the same everywhere — only the persistence mechanism changes:
 
 - `SESSION_LOG.md` — What was done each session, one-liner format
 - `PROGRESS.md` — Phase, status, milestones, expected completion
@@ -49,8 +49,9 @@ Every agent built with this skill gets four layers:
 
 ```
 project-agent-os/
-├── SKILL.md                          # Main skill — 5-step build process
+├── SKILL.md                          # Main skill — platform detection, build, and retrofit flows
 └── references/
+    ├── platform-targets.md           # How memory/commands map to each platform (Claude Project, claude.ai, Cowork, Claude Code)
     ├── os-layers.md                  # Design guide for all four OS layers
     ├── memory-templates.md           # Ready-to-use schemas for every memory file type
     └── token-rules.md                # What goes in instructions vs. knowledge base
@@ -68,7 +69,7 @@ Install this skill into your Claude environment, then trigger it by saying thing
 - "Design a system prompt for a project agent"
 - "Add memory and calendar awareness to this existing prompt"
 
-The skill will interview you, design the full OS, and produce all output files ready to copy-paste.
+Tell it where the agent will run — Claude Project, claude.ai, Cowork, or Claude Code — or let it ask (it defaults to Claude Project if unclear). The skill will interview you, design the full OS, and produce all output files ready to copy-paste — or, if you hand it an existing prompt, propose additive patches instead of a rebuild.
 
 ---
 
@@ -80,7 +81,7 @@ The skill will interview you, design the full OS, and produce all output files r
 
 **One-liners in memory** — All log entries, preferences, and decisions are maximum one sentence.
 
-**Calendar truth** — Dates always come from Google Calendar MCP, never from assumption.
+**Calendar truth** — Dates come from the platform's most reliable source first (system clock, MCP, session context, or asking the user — in the order that fits the platform), never from silent assumption; the source used is always logged or surfaced.
 
 **Silent memory updates** — The agent never interrupts a session to announce it saved something.
 
