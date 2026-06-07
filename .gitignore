@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Python (in case skill scripts use it)
+__pycache__/
+*.pyc
+
+# Env / secrets
+.env
+.env.local
+
+# Node (in case skill tooling uses it)
+node_modules/
