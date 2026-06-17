@@ -106,9 +106,14 @@ Produce ONE self-contained `.html` file using `references/html-boilerplate.html`
 - All colors pulled from the active Style Profile.
 - Accent word wrapped in `<span class="accent">`.
 - Logo block top-right, orange page number bottom-left, CTA styled on the last slide.
-- Keep the screenshot-to-PDF instructions that are in the boilerplate's top comment.
-- Save it to the session output dir and give the user the path. Tell them: open in a browser, screenshot
-  each section at 1080×1080, combine the PNGs into one PDF, upload as a LinkedIn document post.
+- Save the `.html` to the session output dir.
+- **Then auto-convert to PDF.** Run `references/html_to_pdf.py` on the saved file to produce the
+  LinkedIn-ready PDF (one square 1080-page per slide, fonts and colors baked in):
+  `python3 references/html_to_pdf.py <carousel>.html <carousel>.pdf`
+  It does ONE headless-Chrome print pass (~10s); needs Google Chrome (present on Refael's Mac).
+  If Chrome is missing it prints the manual fallback. Deliver BOTH files (.html to tweak, .pdf to
+  post) and tell the user: LinkedIn → start a post → document icon → upload the PDF.
+- Pixel-faithful to the Style Profile — this is the accurate path; prefer it over Mode C when fidelity matters.
 
 ## Commands
 
@@ -153,4 +158,5 @@ tone. Replace the file, keep `{{BRAND}}` / `{{HEADSHOT}}` as placeholders, and c
 - `references/layouts.md` — full layout templates + rotation examples
 - `references/flows.md` — the 7 flow types, beat-by-beat with slide counts
 - `references/html-boilerplate.html` — self-contained 1080×1080 HTML/CSS base for Mode B
+- `references/html_to_pdf.py` — converts a Mode B HTML file to a LinkedIn-ready PDF (one Chrome pass)
 - `references/canva-mcp.md` — exact Canva MCP tool sequence + constraints for Mode C (canva-live)

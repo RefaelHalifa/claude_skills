@@ -3,14 +3,12 @@
   LINKEDIN CAROUSEL — self-contained HTML (Mode B)  |  Style: Refael "warm-paper editorial"
   ============================================================================
   HOW TO TURN THIS INTO A LINKEDIN DOCUMENT POST:
-    1. Open this file in a browser (Chrome recommended). Each <section> is one
-       1080x1080 slide.
-    2. Screenshot each slide at exactly 1080x1080. Easiest options:
-         a) Browser DevTools > device toolbar > set 1080x1080 > capture each section, OR
-         b) macOS: zoom so a slide fills the view, Cmd-Shift-4, drag the square, OR
-         c) Print to PDF (Cmd-P) with margins=None, scale fit — each section breaks to its own page.
-    3. Combine the slide images/pages into ONE PDF in order (Preview, or any merge tool).
-    4. On LinkedIn: Start a post > document icon > upload the PDF > title it > post.
+    BEST (automatic): run the bundled converter — one Chrome pass, ~10s, square pages:
+        python3 html_to_pdf.py  this-file.html  out.pdf
+      Then on LinkedIn: Start a post > document icon > upload out.pdf > title it > post.
+    MANUAL (if Chrome/script unavailable):
+      Open in a browser, screenshot each <section> at 1080x1080, combine the PNGs into one
+      PDF in order (Preview or any merge tool), then upload as above.
   NOTES FOR THE GENERATOR:
     - Duplicate a <section> per slide (6-10 total). Keep classes; swap text.
     - Accent word goes in <span class="accent">...</span>.
